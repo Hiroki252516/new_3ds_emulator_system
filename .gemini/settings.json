@@ -1,0 +1,52 @@
+{
+  "ide": {
+    "hasSeenNudge": true,
+    "enabled": true
+  },
+  "security": {
+    "auth": {
+      "selectedType": "oauth-personal"
+    }
+  },
+  "model": {
+    "name": "gemini-3-flash-high",
+    "compressionThreshold": 0.2,
+    "maxSessionTurns": 40,
+    "summarizeToolOutput": {
+      "run_shell_command": {
+        "tokenBudget": 2000
+      }
+    }
+  },
+  "modelConfigs": {
+    "customAliases": {
+      "gemini-3-flash-high": {
+        "extends": "chat-base-3",
+        "modelConfig": {
+          "model": "gemini-3-flash-preview",
+          "generateContentConfig": {
+            "thinkingConfig": {
+              "thinkingLevel": "HIGH"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tools": {
+    "truncateToolOutputThreshold": 12000,
+    "useRipgrep": true
+  },
+  "general": {
+    "checkpointing": {
+      "enabled": true
+    }
+  },
+  "useWriteTodos": true,
+  "context": {
+    "fileFiltering": {
+      "respectGitIgnore": true,
+      "respectGeminiIgnore": true
+    }
+  }
+}
