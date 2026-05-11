@@ -1,17 +1,47 @@
-# Threebrew — Codex handoff documentation
+# threebrew Gemini CLI setup files
 
-This repository is intended to be developed primarily by OpenAI Codex, with human review after each task.
+This bundle contains repository-relative files for the `new_3ds_emulator_system` repository.
 
-Project goal: build a clean-room-ish, educational, general-purpose Nintendo 3DS emulator for macOS Apple Silicon, targeting the user's MacBook Air M4 with 24GB unified memory. Gameplay should be possible directly on the Mac using keyboard, mouse/trackpad, and optionally standard desktop game controllers. Do not design around iPhone-as-controller.
+It intentionally does **not** include `tasks/task-board.md`.
 
-Start by reading:
+## Included files
 
-1. `AGENTS.md`
-2. `docs/00_PROJECT_BRIEF.md`
-3. `docs/01_LEGAL_AND_LICENSE_BOUNDARIES.md`
-4. `docs/02_ARCHITECTURE.md`
-5. `docs/03_ROADMAP.md`
-6. `docs/04_CODEX_WORKFLOW.md`
-7. `tasks/TASK_QUEUE.md`
+- `GEMINI.md`
+- `.gemini/settings.json`
+- `.gemini/agents/architect.md`
+- `.gemini/agents/codebase-investigator.md`
+- `.gemini/agents/reviewer.md`
+- `.gemini/agents/test-runner.md`
+- `.gemini/agents/release-manager.md`
+- `.gemini/commands/checkpoint.toml`
+- `.gemini/commands/handoff.toml`
+- `.gemini/commands/review-task.toml`
+- `.gemini/hooks/pre-compress-state.sh`
+- `.gemini/hooks/block-huge-shell-output.sh`
+- `tasks/agent-state/TASK-001.WORKING_STATE.md`
+- `tasks/architecture/DECISIONS.md`
 
-The project intentionally starts with homebrew and test programs. Commercial game support is a long-term compatibility milestone, not the first milestone.
+## Apply
+
+Copy the files into the repository root, preserving paths.
+
+Then run:
+
+```bash
+chmod +x .gemini/hooks/*.sh
+```
+
+Inside Gemini CLI, reload custom commands and agents:
+
+```text
+/commands reload
+/agents reload
+```
+
+If hooks are disabled or untrusted, use:
+
+```text
+/hooks panel
+```
+
+and enable the project hooks after reviewing them.

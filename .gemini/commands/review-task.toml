@@ -1,0 +1,62 @@
+description = "Review the current task branch against main using task-board and worker state."
+
+prompt = '''
+Review the current threebrew task branch against main.
+
+Arguments:
+{{args}}
+
+Read:
+- AGENTS.md
+- GEMINI.md
+- docs/01_LEGAL_AND_LICENSE_BOUNDARIES.md
+- docs/02_ARCHITECTURE.md
+- docs/08_IMPLEMENTATION_SPEC.md
+- docs/09_COMPATIBILITY_POLICY.md
+- docs/DEPENDENCIES.md
+- tasks/task-board.md
+- the relevant tasks/agent-state/TASK-xxx.WORKING_STATE.md
+- tasks/architecture/DECISIONS.md if relevant
+
+Inspect:
+!{git branch --show-current}
+!{git status --short}
+!{git diff --stat main...HEAD 2>/dev/null || git diff --stat}
+!{git diff --name-only main...HEAD 2>/dev/null || git diff --name-only}
+
+Use @reviewer if helpful.
+
+Check:
+- Does the diff stay within task scope?
+- Were forbidden paths modified?
+- Are tests present and relevant?
+- Are unsupported emulator behaviors logged clearly?
+- Are legal boundaries respected?
+- Are dependencies documented?
+- Is this ready to merge?
+
+Output:
+
+## Verdict
+
+APPROVE | REQUEST_CHANGES | BLOCKED
+
+## Summary
+
+## Scope check
+
+## Required changes
+
+## Test assessment
+
+## Legal / license assessment
+
+## Dependency policy
+
+## Merge risk
+
+Rules:
+- Do not modify files.
+- Do not run broad test suites unless explicitly requested.
+- Do not paste raw logs.
+'''

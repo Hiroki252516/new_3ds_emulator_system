@@ -1,0 +1,33 @@
+description = "Prepare a handoff summary from a worker task to the supervisor."
+
+prompt = '''
+Prepare a handoff summary for the current threebrew task.
+
+First update the relevant tasks/agent-state/TASK-xxx.WORKING_STATE.md.
+
+Then output:
+
+- task ID
+- branch name
+- latest commit hash
+- status: READY_FOR_REVIEW | BLOCKED | IN_PROGRESS
+- summary of changes
+- files touched
+- verification commands and results
+- known risks
+- blockers
+- recommended reviewer focus
+- next recommended task
+
+Inspect:
+!{git branch --show-current}
+!{git rev-parse --short HEAD}
+!{git status --short}
+!{git diff --stat main...HEAD 2>/dev/null || git diff --stat}
+
+Rules:
+- Do not include raw logs.
+- Do not claim tests passed unless commands actually ran.
+- Do not edit implementation files during handoff.
+- Do not edit tasks/task-board.md unless explicitly acting as supervisor.
+'''

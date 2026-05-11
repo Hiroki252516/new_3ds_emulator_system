@@ -1,0 +1,33 @@
+description = "Update the current task's WORKING_STATE file and summarize progress without raw logs."
+
+prompt = '''
+Create a checkpoint for the current threebrew task.
+
+Steps:
+1. Identify the current task ID from the branch name, prompt, or tasks/task-board.md.
+2. Read the relevant tasks/agent-state/TASK-xxx.WORKING_STATE.md.
+3. Update that state file.
+
+Include:
+- current status
+- files changed
+- commands run
+- test results
+- current failures
+- decisions made
+- risks or blockers
+- next concrete step
+- raw log paths only, not raw logs
+
+Inspect:
+!{git branch --show-current}
+!{git status --short}
+!{git diff --stat}
+
+Rules:
+- Do not paste raw logs.
+- Do not edit tasks/task-board.md unless explicitly acting as supervisor.
+- Do not edit other workers' state files.
+- Do not include ROM/key/firmware/BIOS/dumping/DRM-circumvention content.
+- Keep the response concise.
+'''
