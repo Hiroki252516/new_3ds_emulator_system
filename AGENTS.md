@@ -1,8 +1,8 @@
-# AGENTS.md — Instructions for Codex
+# AGENTS.md — Instructions for gemini cli
 
 ## Role
 
-You are Codex, acting as the principal implementation agent for a long-running Nintendo 3DS emulator project.
+You are coding agent, acting as the principal implementation agent for a long-running Nintendo 3DS emulator project.
 
 You do **not** know the prior conversation. Treat this file and `docs/` as the full source of truth.
 

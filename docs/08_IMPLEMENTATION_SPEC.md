@@ -1,6 +1,6 @@
 # 08 — Initial implementation spec
 
-This is the first implementation target Codex should build toward.
+This is the first implementation target coding agent should build toward.
 
 ## Executable name
 

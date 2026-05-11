@@ -84,7 +84,7 @@ Whenever Codex changes architecture or behavior, update one of:
 - `docs/03_ROADMAP.md`
 - `docs/05_BUILD_AND_TEST.md`
 - `docs/DEPENDENCIES.md`
-- `tasks/TASK_QUEUE.md`
+- `tasks/task-board.md`
 
 ## Compatibility notes
 
