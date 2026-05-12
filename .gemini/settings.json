@@ -8,6 +8,9 @@
       "selectedType": "oauth-personal"
     }
   },
+  "experimental": {
+    "worktrees": true
+  },
   "model": {
     "name": "gemini-3-flash-high",
     "compressionThreshold": 0.2,
@@ -40,6 +43,10 @@
   "general": {
     "checkpointing": {
       "enabled": true
+    },
+    "plan": {
+      "enabled": true,
+      "modelRouting": true
     }
   },
   "useWriteTodos": true,
@@ -48,5 +55,74 @@
       "respectGitIgnore": true,
       "respectGeminiIgnore": true
     }
+  },
+  "agents": {
+    "overrides": {
+      "architect": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 12,
+          "maxTimeMinutes": 10
+        }
+      },
+      "codebase-investigator": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 20,
+          "maxTimeMinutes": 15
+        }
+      },
+      "reviewer": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 12,
+          "maxTimeMinutes": 10
+        }
+      },
+      "test-runner": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 10,
+          "maxTimeMinutes": 15
+        }
+      },
+      "release-manager": {
+        "enabled": true,
+        "runConfig": {
+          "maxTurns": 10,
+          "maxTimeMinutes": 10
+        }
+      }
+    }
+  },
+  "hooks": {
+    "PreCompress": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "name": "pre-compress-state",
+            "type": "command",
+            "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/pre-compress-state.sh",
+            "timeout": 5000,
+            "description": "Remind the worker to persist task state before context compression."
+          }
+        ]
+      }
+    ],
+    "BeforeTool": [
+      {
+        "matcher": "run_shell_command",
+        "hooks": [
+          {
+            "name": "block-huge-shell-output",
+            "type": "command",
+            "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/block-huge-shell-output.sh",
+            "timeout": 5000,
+            "description": "Block likely unbounded shell commands unless their output is saved and bounded."
+          }
+        ]
+      }
+    ]
   }
 }
