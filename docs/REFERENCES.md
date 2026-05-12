@@ -1,12 +1,18 @@
 # References
 
-These are starting points for Codex research. They are not permission to copy code.
+These are starting points for Gemini CLI and project research. They are not permission to copy code.
 
-## Codex / agent workflow
+## Gemini CLI / agent workflow
 
-- OpenAI Codex docs: https://developers.openai.com/codex
-- AGENTS.md guide: https://developers.openai.com/codex/guides/agents-md
-- Codex best practices: https://developers.openai.com/codex/learn/best-practices
+- Gemini CLI documentation: https://geminicli.com/docs/
+- Gemini CLI GitHub repository: https://github.com/google-gemini/gemini-cli
+- GEMINI.md context files: https://geminicli.com/docs/cli/gemini-md/
+- Gemini CLI configuration: https://geminicli.com/docs/reference/configuration/
+- Gemini CLI commands: https://geminicli.com/docs/reference/commands/
+- Gemini CLI subagents: https://geminicli.com/docs/core/subagents/
+- Gemini CLI custom commands: https://geminicli.com/docs/cli/custom-commands/
+- Gemini CLI hooks: https://geminicli.com/docs/hooks/
+- Gemini CLI Git worktrees: https://geminicli.com/docs/cli/git-worktrees/
 
 ## Hardware target
 

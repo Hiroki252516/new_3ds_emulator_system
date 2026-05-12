@@ -1,3 +1,38 @@
+# Task Board
+
+This file is the supervisor-controlled task board for Gemini CLI development.
+
+## Rules
+
+- Give Gemini one task at a time unless using explicit worktree workers.
+- Supervisor updates this file.
+- Workers update only their own `tasks/agent-state/TASK-xxx.WORKING_STATE.md`.
+- Full logs must be saved under `.agent-logs/<task-id>/`.
+- Do not paste full logs into this file.
+- Do not delete future project intent when marking tasks complete.
+
+## Status legend
+
+| Status | Meaning |
+|---|---|
+| BACKLOG | Not started |
+| READY | Ready for work |
+| IN_PROGRESS | Worker is active |
+| BLOCKED | Needs human/supervisor decision |
+| REVIEW_READY | Ready for review |
+| CHANGES_REQUESTED | Needs fixes |
+| DONE | Completed and reviewed |
+
+## Active tasks
+
+| ID | Status | Branch/worktree | State file | Owner | Notes |
+|---|---|---|---|---|---|
+| T000 | READY | T000-init-skeleton | tasks/agent-state/T000.WORKING_STATE.md | worker-bootstrap | Initial skeleton |
+
+
+
+
+
 # Codex task queue
 
 Give Codex one task at a time. Do not ask it to implement the full emulator at once.

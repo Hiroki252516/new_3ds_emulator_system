@@ -55,7 +55,6 @@ Positive:
 Negative:
 
 - References must consistently point to `tasks/task-board.md`.
-- Existing Codex-oriented docs may need to be updated for Gemini CLI terminology.
 - Workers must follow ownership rules to avoid merge conflicts in task-state files.
 
 ## Related tasks
