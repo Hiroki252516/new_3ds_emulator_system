@@ -1,6 +1,6 @@
 # 03 — Roadmap
 
-This roadmap assumes a single developer plus Codex assistance, targeting correctness first.
+This roadmap assumes a single developer plus Gemini CLI / AI-agent assistance, targeting correctness first.
 
 ## Project Completion Criteria
 
