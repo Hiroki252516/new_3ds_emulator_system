@@ -1,33 +1,171 @@
-description = "Prepare a handoff summary from a worker task to the supervisor."
+description = "Prepare a PR-ready handoff summary from a threebrew worker branch to the supervisor."
 
-prompt = '''
-Prepare a handoff summary for the current threebrew task.
+prompt = """
+Prepare a PR-ready handoff for the current threebrew task.
 
-First update the relevant tasks/agent-state/TASK-xxx.WORKING_STATE.md.
+This command is for worker branches/worktrees. It does not create a PR, push a branch, merge, or modify implementation files. It prepares the information a supervisor, reviewer, or human owner needs to review the branch safely.
 
-Then output:
+Core repository rules to follow:
 
-- task ID
-- branch name
-- latest commit hash
-- status: READY_FOR_REVIEW | BLOCKED | IN_PROGRESS
-- summary of changes
-- files touched
-- verification commands and results
-- known risks
-- blockers
-- recommended reviewer focus
-- next recommended task
+- Treat `GEMINI.md`, `AGENTS.md`, `docs/01_LEGAL_AND_LICENSE_BOUNDARIES.md`, `docs/02_ARCHITECTURE.md`, `docs/08_IMPLEMENTATION_SPEC.md`, `docs/DEPENDENCIES.md`, `tasks/task-board.md`, the relevant `tasks/agent-state/TASK-xxx.WORKING_STATE.md`, and `tasks/architecture/DECISIONS.md` as review context.
+- Do not work directly on `main`.
+- Do not merge into `main`.
+- Do not push unless explicitly instructed by the human.
+- Do not open a PR unless explicitly instructed by the human.
+- Do not enable auto-merge.
+- Do not edit implementation files during handoff.
+- Do not edit `tasks/task-board.md` unless explicitly acting as supervisor.
+- Workers update only their own `tasks/agent-state/TASK-xxx.WORKING_STATE.md`.
+- Do not paste raw logs into the response, `docs/`, or `tasks/`.
+- Save raw logs under `.agent-logs/<task-id>/` and reference their paths only.
 
-Inspect:
+First, identify the task:
+
+1. Determine the current branch name.
+2. Infer the task ID from the branch name, the current prompt, or `tasks/task-board.md`.
+3. Locate the relevant `tasks/agent-state/TASK-xxx.WORKING_STATE.md`.
+4. If the task ID or state file cannot be identified, stop and mark the handoff `BLOCKED` with the missing information.
+
+Inspect repository state with bounded commands:
+
 !{git branch --show-current}
 !{git rev-parse --short HEAD}
 !{git status --short}
 !{git diff --stat main...HEAD 2>/dev/null || git diff --stat}
+!{git diff --name-only main...HEAD 2>/dev/null || git diff --name-only}
 
-Rules:
+Update the relevant `tasks/agent-state/TASK-xxx.WORKING_STATE.md` before producing the final handoff.
+
+The state file update must include:
+
+- current status
+- branch name
+- latest commit hash
+- summary of changes
+- files touched
+- commands run
+- test results
+- current failures
+- risks or blockers
+- reviewer focus
+- raw log paths only, not raw logs
+- next concrete step
+
+Legal and license gate:
+
+If the branch includes, requests, documents, automates, or assumes any of the following, mark the handoff `BLOCKED`:
+
+- ROM downloads or links to ROM sites
+- Nintendo keys
+- boot ROMs
+- BIOS blobs
+- firmware blobs
+- copyrighted Nintendo assets
+- cartridge dumping instructions
+- DRM circumvention
+- encrypted game loading as an early feature
+- code that assumes bundled proprietary Nintendo files
+
+Dependency gate:
+
+If dependencies were added or changed, verify that `docs/DEPENDENCIES.md` documents:
+
+- dependency name
+- version or source
+- license
+- purpose
+- whether it is runtime, build-time, or test-time
+- whether it is linked, vendored, or used as a tool
+
+If dependency impact is unclear or undocumented, mark the handoff `BLOCKED` or `IN_PROGRESS`, not `READY_FOR_REVIEW`.
+
+Test gate:
+
+Do not mark `READY_FOR_REVIEW` if relevant tests failed, were not run, or are unknown.
+
+If tests were not run, explain why and mark status as `IN_PROGRESS` or `BLOCKED`.
+
+If only narrow tests were run, list exactly which broader tests are still needed before merge.
+
+Output exactly this format:
+
+## Handoff status
+
+READY_FOR_REVIEW | BLOCKED | IN_PROGRESS
+
+## Task
+
+- Task ID:
+- Branch:
+- Commit:
+- State file:
+
+## PR title draft
+
+<concise title>
+
+## PR description draft
+
+### Summary
+
+- 
+
+### Files changed
+
+- 
+
+### Verification
+
+| Command | Result | Notes | Raw log |
+|---|---|---|---|
+|  |  |  |  |
+
+### Tests passed
+
+- 
+
+### Tests failed or not run
+
+- 
+
+### Legal / license check
+
+- 
+
+### Dependency check
+
+- 
+
+### Documentation updates
+
+- 
+
+### Known risks / blockers
+
+- 
+
+### Reviewer focus
+
+- 
+
+### Recommended merge order / dependencies
+
+- 
+
+## Supervisor notes
+
+- Do not merge until reviewer approval and required checks pass.
+- Do not enable auto-merge unless the human explicitly asks.
+- If this branch touches shared files, review cross-task conflict risk before merge.
+
+Rules for final answer:
+
 - Do not include raw logs.
 - Do not claim tests passed unless commands actually ran.
-- Do not edit implementation files during handoff.
-- Do not edit tasks/task-board.md unless explicitly acting as supervisor.
-'''
+- Do not mark `READY_FOR_REVIEW` if relevant tests failed or were not run.
+- Do not modify implementation files during handoff.
+- Do not merge.
+- Do not push unless explicitly asked by the human.
+- Do not open a PR unless explicitly asked by the human.
+- Do not enable auto-merge.
+"""
