@@ -17,7 +17,7 @@
     "maxSessionTurns": -1,
     "summarizeToolOutput": {
       "run_shell_command": {
-        "tokenBudget": 4000
+        "tokenBudget": 5000
       }
     }
   },
@@ -39,9 +39,9 @@
   "tools": {
     "shell": {
       "backgroundCompletionBehavior": "notify",
-      "inactivityTimeout": 900
+      "inactivityTimeout": 1800
     },
-    "truncateToolOutputThreshold": 20000,
+    "truncateToolOutputThreshold": 30000,
     "useRipgrep": true
   },
   "general": {
@@ -65,36 +65,36 @@
       "architect": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 40,
-          "maxTimeMinutes": 45
+          "maxTurns": 60,
+          "maxTimeMinutes": 90
         }
       },
       "codebase-investigator": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 80,
-          "maxTimeMinutes": 60
+          "maxTurns": 120,
+          "maxTimeMinutes": 120
         }
       },
       "reviewer": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 40,
-          "maxTimeMinutes": 45
+          "maxTurns": 60,
+          "maxTimeMinutes": 90
         }
       },
       "test-runner": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 30,
-          "maxTimeMinutes": 60
+          "maxTurns": 45,
+          "maxTimeMinutes": 120
         }
       },
       "release-manager": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 30,
-          "maxTimeMinutes": 30
+          "maxTurns": 50,
+          "maxTimeMinutes": 60
         }
       }
     }
