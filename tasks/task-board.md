@@ -208,7 +208,7 @@ Phase 12 is complete when:
 
 # gemini cli task queue
 
-Give Codex one task at a time. Do not ask it to implement the full emulator at once.
+Give gemini cli one task at a time. Do not ask it to implement the full emulator at once.
 
 ## T000 — Initialize repository skeleton
 
@@ -307,7 +307,7 @@ Create a plan for building or sourcing a simple lawful homebrew test program fro
 
 ## Phase 0 continuation — repository/bootstrap quality
 
-These tasks harden the initial repository so long-running Codex work remains reproducible.
+These tasks harden the initial repository so long-running gemini cli work remains reproducible.
 
 ## T110 — Build presets and developer workflow
 
@@ -333,7 +333,7 @@ Acceptance:
 Prompt:
 
 ```text
-Add or refine clang-format configuration and a non-mutating format check command or CMake target. Do not reformat unrelated code unless required. Document how Codex should run the check.
+Add or refine clang-format configuration and a non-mutating format check command or CMake target. Do not reformat unrelated code unless required. Document how gemini cli should run the check.
 ```
 
 Acceptance:
