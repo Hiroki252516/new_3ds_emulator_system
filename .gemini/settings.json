@@ -13,11 +13,11 @@
   },
   "model": {
     "name": "gemini-3-flash-high",
-    "compressionThreshold": 0.2,
-    "maxSessionTurns": 40,
+    "compressionThreshold": 0.5,
+    "maxSessionTurns": -1,
     "summarizeToolOutput": {
       "run_shell_command": {
-        "tokenBudget": 2000
+        "tokenBudget": 4000
       }
     }
   },
@@ -37,7 +37,11 @@
     }
   },
   "tools": {
-    "truncateToolOutputThreshold": 12000,
+    "shell": {
+      "backgroundCompletionBehavior": "notify",
+      "inactivityTimeout": 900
+    },
+    "truncateToolOutputThreshold": 20000,
     "useRipgrep": true
   },
   "general": {
@@ -61,36 +65,36 @@
       "architect": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 12,
-          "maxTimeMinutes": 10
+          "maxTurns": 40,
+          "maxTimeMinutes": 45
         }
       },
       "codebase-investigator": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 20,
-          "maxTimeMinutes": 15
+          "maxTurns": 80,
+          "maxTimeMinutes": 60
         }
       },
       "reviewer": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 12,
-          "maxTimeMinutes": 10
+          "maxTurns": 40,
+          "maxTimeMinutes": 45
         }
       },
       "test-runner": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 10,
-          "maxTimeMinutes": 15
+          "maxTurns": 30,
+          "maxTimeMinutes": 60
         }
       },
       "release-manager": {
         "enabled": true,
         "runConfig": {
-          "maxTurns": 10,
-          "maxTimeMinutes": 10
+          "maxTurns": 30,
+          "maxTimeMinutes": 30
         }
       }
     }

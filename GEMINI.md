@@ -233,3 +233,50 @@ Known limitations:
 Next recommended task:
 - ...
 ```
+## Branch, PR, and merge policy
+
+Each implementation task must run in its own task branch/worktree.
+
+Branch naming:
+
+- `TASK-xxx-short-name`
+
+Rules:
+
+- Do not work directly on `main`.
+- Do not commit directly to `main`.
+- Do not merge into `main` from a worker session.
+- Each task branch must produce a PR or PR-ready handoff.
+- The worker may prepare commits and a handoff, but must not self-merge.
+- The Supervisor or human owner decides merge order.
+- The Reviewer must review the branch before merge.
+- Tests relevant to the task must pass before review-ready status.
+- Full integration tests must pass before merging into `main`.
+- If tests are failing, mark the task as `BLOCKED` or `CHANGES_REQUESTED`, not `REVIEW_READY`.
+- If a task requires shared API, schema, build config, dependency, or lockfile changes, stop and ask the Supervisor unless that scope is explicitly assigned.
+- Do not enable auto-merge unless the human explicitly asks for it.
+- Prefer squash merge or merge commits according to the human's repository policy; do not choose merge strategy autonomously.
+
+Worker responsibility:
+
+- Implement the assigned task.
+- Commit small coherent changes.
+- Run narrow tests.
+- Update `tasks/agent-state/TASK-xxx.WORKING_STATE.md`.
+- Run `/handoff`.
+
+Reviewer responsibility:
+
+- Verify task scope.
+- Verify tests.
+- Verify legal/license boundaries.
+- Verify dependency policy.
+- Verify no forbidden files changed.
+- Return `APPROVE`, `REQUEST_CHANGES`, or `BLOCKED`.
+
+Supervisor responsibility:
+
+- Decide merge order.
+- Resolve cross-task conflicts.
+- Ensure CI/status checks pass.
+- Merge only after review approval and required checks pass.
