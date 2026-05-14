@@ -1,41 +1,172 @@
-description = "Review the current task branch against main using task-board and worker state."
+description = "Review the current threebrew task branch against main and decide whether it is PR-ready, review-ready, and merge-ready."
 
-prompt = '''
-Review the current threebrew task branch against main.
+prompt = """
+You are reviewing the current `threebrew` task branch as a merge-gate command.
 
 Arguments:
 {{args}}
 
-Read:
-- AGENTS.md
-- GEMINI.md
-- docs/01_LEGAL_AND_LICENSE_BOUNDARIES.md
-- docs/02_ARCHITECTURE.md
-- docs/08_IMPLEMENTATION_SPEC.md
-- docs/09_COMPATIBILITY_POLICY.md
-- docs/DEPENDENCIES.md
-- tasks/task-board.md
-- the relevant tasks/agent-state/TASK-xxx.WORKING_STATE.md
-- tasks/architecture/DECISIONS.md if relevant
+Your job is to determine whether the current branch is:
 
-Inspect:
+- APPROVE: safe for supervisor/human merge consideration after required CI/status checks pass
+- REQUEST_CHANGES: generally valid but requires worker fixes before review approval
+- BLOCKED: requires supervisor/human decision, has legal/license risk, has unclear dependency impact, has failing/missing required tests, or has unsafe merge risk
+
+This command is read-only. Do not modify files. Do not commit. Do not push. Do not create a PR. Do not merge. Do not enable auto-merge. Do not change branch state.
+
+## Required context to read
+
+Read these files first, or inspect targeted sections when they are large:
+
+- `GEMINI.md`
+- `AGENTS.md`
+- `docs/01_LEGAL_AND_LICENSE_BOUNDARIES.md`
+- `docs/02_ARCHITECTURE.md`
+- `docs/08_IMPLEMENTATION_SPEC.md`
+- `docs/09_COMPATIBILITY_POLICY.md`
+- `docs/DEPENDENCIES.md`
+- `tasks/task-board.md`
+- the relevant `tasks/agent-state/TASK-xxx.WORKING_STATE.md`
+- `tasks/architecture/DECISIONS.md` when the task or branch touches architecture, dependencies, build system, public API, task workflow, or legal boundaries
+
+If the relevant task ID or state file cannot be identified from the branch name, `{{args}}`, or `tasks/task-board.md`, mark the review as BLOCKED.
+
+## Repository and branch inspection
+
+Inspect the current branch using bounded commands only:
+
 !{git branch --show-current}
 !{git status --short}
+!{git rev-parse --short HEAD}
 !{git diff --stat main...HEAD 2>/dev/null || git diff --stat}
 !{git diff --name-only main...HEAD 2>/dev/null || git diff --name-only}
 
-Use @reviewer if helpful.
+If `main...HEAD` is unavailable, explain that the comparison base could not be verified and review against the best available diff, but do not return APPROVE unless the comparison base is clear.
 
-Check:
-- Does the diff stay within task scope?
+## Optional targeted inspection
+
+Use @reviewer if available and helpful.
+
+Prefer targeted inspection:
+
+- `git diff --stat main...HEAD`
+- `git diff --name-only main...HEAD`
+- targeted file reads
+- targeted tests
+- short log summaries
+
+Do not paste raw logs. If logs are needed, refer to `.agent-logs/<task-id>/...` paths and summarize only the relevant failure lines.
+
+## Review checks
+
+Check all of the following:
+
+### 1. Task identity and scope
+
+- Does the current branch match the expected task branch/worktree naming convention?
+- Is the task listed in `tasks/task-board.md`?
+- Is there a corresponding `tasks/agent-state/TASK-xxx.WORKING_STATE.md`?
+- Does the branch stay within the task's allowed paths?
 - Were forbidden paths modified?
-- Are tests present and relevant?
-- Are unsupported emulator behaviors logged clearly?
-- Are legal boundaries respected?
-- Are dependencies documented?
-- Is this ready to merge?
+- Did the worker modify `tasks/task-board.md` without acting as supervisor?
+- Did the worker modify another worker's state file?
 
-Output:
+### 2. Branch, PR, and merge policy
+
+- The worker must not work directly on `main`.
+- The worker must not commit directly to `main`.
+- The worker must not merge into `main`.
+- The worker must not self-merge.
+- The worker must not enable auto-merge.
+- The branch must be PR-ready or handoff-ready before supervisor review.
+- The supervisor or human owner decides merge order.
+
+If the current branch is `main`, return BLOCKED.
+
+### 3. Correctness and architecture
+
+- Does the change match `docs/02_ARCHITECTURE.md`?
+- Does it preserve separation between emulator core and macOS frontend?
+- Does it avoid title-specific hacks?
+- Does unsupported behavior produce structured logs instead of being silently ignored?
+- Does it keep early development focused on homebrew, synthetic tests, deterministic CPU/memory behavior, and traceability?
+- Does it avoid copying implementation code from reference emulators?
+
+### 4. Tests and verification
+
+- Are relevant tests present or updated?
+- Did the worker run the narrowest relevant build/test commands?
+- Are test commands and results recorded in the relevant `WORKING_STATE.md`?
+- Are raw logs saved under `.agent-logs/<task-id>/` rather than pasted into docs or task files?
+- Did relevant tests pass?
+- If tests were not run, is there a valid reason?
+
+Do not return APPROVE if required relevant tests failed, were not run, or are not documented.
+
+### 5. Legal and license safety
+
+Reject or block any branch involving:
+
+- ROM downloading
+- ROM site links
+- Nintendo keys
+- boot ROMs
+- BIOS blobs
+- firmware blobs
+- proprietary Nintendo assets
+- DRM circumvention
+- cartridge dumping instructions
+- encrypted commercial game loading as an early feature
+- tests that require proprietary Nintendo files
+
+If any of these appear, return BLOCKED.
+
+### 6. Dependency policy
+
+If dependencies were added or changed, verify that `docs/DEPENDENCIES.md` records:
+
+- dependency name
+- version or version policy
+- license
+- reason for use
+- runtime/build-time/test-time role
+- linking/vendoring/tool usage
+
+If dependency impact is unclear or undocumented, return BLOCKED or REQUEST_CHANGES depending on severity.
+
+### 7. Documentation impact
+
+Check whether product docs need updates:
+
+- `docs/02_ARCHITECTURE.md`
+- `docs/05_BUILD_AND_TEST.md`
+- `docs/07_MAC_PLAYBACK_REQUIREMENTS.md`
+- `docs/08_IMPLEMENTATION_SPEC.md`
+- `docs/DEPENDENCIES.md`
+- `tasks/architecture/DECISIONS.md`
+
+If behavior, architecture, build/test commands, dependency assumptions, or workflow changed without documentation, return REQUEST_CHANGES.
+
+### 8. Merge conflict and integration risk
+
+Identify files likely to conflict with other workers:
+
+- shared CMake/build files
+- `docs/DEPENDENCIES.md`
+- `GEMINI.md`
+- `AGENTS.md`
+- `.gemini/settings.json`
+- `.gemini/agents/*`
+- `.gemini/commands/*`
+- `tasks/task-board.md`
+- public headers/APIs
+- shared emulator core abstractions
+
+If the branch has high integration risk, mark it clearly and recommend merge order or supervisor decision.
+
+## Output format
+
+Return exactly the following sections:
 
 ## Verdict
 
@@ -43,20 +174,70 @@ APPROVE | REQUEST_CHANGES | BLOCKED
 
 ## Summary
 
+Short summary of what the branch appears to do.
+
+## Task and branch identity
+
+- Task ID:
+- Current branch:
+- State file:
+- Base comparison:
+
 ## Scope check
 
-## Required changes
+State whether the branch stayed within allowed scope and list any scope violations.
+
+## Correctness / architecture
+
+Assess correctness, architecture fit, unsupported behavior logging, and emulator-specific risks.
 
 ## Test assessment
 
+List tests/builds that were run, whether they passed, and any missing required tests.
+
 ## Legal / license assessment
 
-## Dependency policy
+State whether the branch respects the legal boundaries and license policy.
+
+## Dependency assessment
+
+State whether dependencies changed and whether documentation is complete.
+
+## Documentation assessment
+
+State whether docs/task state/decision records are updated appropriately.
+
+## Merge readiness
+
+State one of:
+
+- Ready for supervisor/human merge consideration after CI/status checks pass
+- Not ready: changes requested
+- Blocked: supervisor/human decision required
+
+Also list CI/status checks that should pass before merge.
+
+## Required changes
+
+List mandatory fixes. Use `None` if no required changes.
+
+## Optional suggestions
+
+List non-blocking suggestions. Use `None` if no suggestions.
 
 ## Merge risk
 
-Rules:
+Summarize conflict risk, shared-file risk, and recommended merge order.
+
+## Rules
+
 - Do not modify files.
-- Do not run broad test suites unless explicitly requested.
+- Do not commit.
+- Do not push.
+- Do not create a PR.
+- Do not merge.
+- Do not enable auto-merge.
+- Do not approve if required tests failed, were not run, or are not documented.
+- Do not approve legal/license boundary violations.
 - Do not paste raw logs.
-'''
+"""
