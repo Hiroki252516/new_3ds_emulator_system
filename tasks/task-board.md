@@ -206,7 +206,7 @@ Phase 12 is complete when:
 
 
 
-# Codex task queue
+# gemini cli task queue
 
 Give Codex one task at a time. Do not ask it to implement the full emulator at once.
 
