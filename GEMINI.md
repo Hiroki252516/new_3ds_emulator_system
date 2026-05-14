@@ -11,7 +11,7 @@ You do not know prior chat history. Treat these files as the source of truth:
 3. `docs/01_LEGAL_AND_LICENSE_BOUNDARIES.md`
 4. `docs/02_ARCHITECTURE.md`
 5. `docs/03_ROADMAP.md`
-6. `docs/04_CODEX_WORKFLOW.md`
+6. `docs/04_geminicli_WORKFLOW.md`
 7. `docs/05_BUILD_AND_TEST.md`
 8. `docs/06_RESEARCH_MAP.md`
 9. `docs/07_MAC_PLAYBACK_REQUIREMENTS.md`

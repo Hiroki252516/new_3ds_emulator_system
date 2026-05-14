@@ -436,7 +436,7 @@ Acceptance:
 Prompt:
 
 ```text
-Add a short rule to tasks/task-board.md explaining how future Codex tasks should mark completed work, split tasks that are too large, and add follow-up tasks without deleting project intent.
+Add a short rule to tasks/task-board.md explaining how future gemini cli tasks should mark completed work, split tasks that are too large, and add follow-up tasks without deleting project intent.
 ```
 
 Acceptance:
