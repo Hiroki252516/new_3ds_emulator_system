@@ -2,6 +2,22 @@
 
 This roadmap assumes a single developer plus Codex assistance, targeting correctness first.
 
+## Project Completion Criteria
+
+The first public-quality development milestone of `threebrew` is complete when all of the following are true:
+
+- The emulator builds reproducibly on the target macOS Apple Silicon environment.
+- Core emulator code and the macOS frontend remain separated according to `docs/02_ARCHITECTURE.md`.
+- Synthetic CPU, memory, loader, HLE service, framebuffer, and input tests pass.
+- A lawful homebrew 3DSX program built from source can be loaded far enough to reach a deterministic stop reason, visible trace, or basic output path.
+- Unsupported CPU instructions, SVCs, IPC commands, services, FS operations, GPU commands, and audio operations produce structured logs rather than silent failures.
+- No ROM downloads, Nintendo keys, BIOS, firmware blobs, cartridge dumping instructions, DRM circumvention, or proprietary Nintendo assets are required or documented.
+- Dependencies are documented in `docs/DEPENDENCIES.md`.
+- Compatibility results, if any real lawful homebrew is tested, are recorded according to `docs/09_COMPATIBILITY_POLICY.md`.
+- CI or documented local verification passes.
+
+Project completion is milestone-based. This first milestone does not mean full commercial title compatibility.
+
 ## Phase 0 — Repository and project skeleton
 
 Goal: buildable repository with docs and CI-ready structure.

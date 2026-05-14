@@ -140,6 +140,8 @@ For every task:
 11. Use `/checkpoint` before compression, before commit, and after tests.
 12. Use `/handoff` when ready for supervisor review.
 
+Before marking a task `REVIEW_READY` or `DONE`, check `tasks/task-board.md` for the Global Definition of Done and `REVIEW_READY` Criteria.
+
 ## Worktree and worker rules
 
 When running in a task worktree:

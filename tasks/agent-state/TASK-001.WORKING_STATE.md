@@ -36,6 +36,22 @@ Describe the task goal in 1–3 sentences.
 |---:|---|---|---|
 | 1 | pending |  |  |
 
+## Acceptance progress
+
+| Criterion | Status | Evidence |
+|---|---|---|
+|  | pending |  |
+
+## Test evidence
+
+| Command | Result | Evidence / raw log |
+|---|---|---|
+|  | not run |  |
+
+## Remaining exit criteria
+
+-
+
 ## Changes made
 
 | File | Change | Reason |
@@ -67,6 +83,12 @@ Describe the next concrete action.
 ## Handoff summary
 
 - Ready for review: no
+- Summary of changes:
+- Files touched:
+- Commands run:
+- Test results:
 - Remaining work:
 - Tests still needed:
 - Known limitations:
+- Raw log paths:
+- Recommended reviewer focus:

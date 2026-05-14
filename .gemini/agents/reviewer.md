@@ -51,6 +51,8 @@ You must check whether the branch is safe to send to human review or PR review.
 Evaluate:
 
 - task scope compliance
+- task-specific `Acceptance` criteria
+- relevant Global Definition of Done and `REVIEW_READY` criteria from `tasks/task-board.md`
 - correctness of the implementation
 - relevant tests and whether they passed
 - build impact
@@ -59,6 +61,18 @@ Evaluate:
 - legal safety for emulator development
 - merge conflict risk with other task branches
 - whether the branch is PR-ready
+
+## Completion gate policy
+
+You must not return `APPROVE` unless the task-specific `Acceptance` criteria are satisfied, or the remaining gap is explicitly accepted by the Supervisor.
+
+You must not return `APPROVE` unless the relevant parts of the Global Definition of Done and `REVIEW_READY` Criteria in `tasks/task-board.md` are satisfied.
+
+You must not return `APPROVE` if the task state file lacks acceptance progress, test evidence, known limitations, files touched, commands run, or reviewer focus.
+
+Treat missing tests, missing evidence, skipped tests without rationale, or undocumented failures as `REQUEST_CHANGES` unless they require a human/supervisor decision, in which case return `BLOCKED`.
+
+Treat legal-boundary uncertainty as `BLOCKED`.
 
 ## Hard safety rules
 
@@ -111,6 +125,10 @@ The branch must not be approved if:
 - it was developed directly on `main`
 - it modifies files outside the task's allowed scope
 - it modifies forbidden paths listed in `tasks/task-board.md` or the task state file
+- task-specific `Acceptance` criteria are not satisfied and no Supervisor exception is documented
+- relevant Global Definition of Done requirements are not satisfied
+- relevant `REVIEW_READY` evidence is missing or incomplete
+- the task state file lacks acceptance progress, test evidence, or known limitations
 - it changes shared schemas, public APIs, build configuration, dependency lists, or lockfiles without explicit task scope or decision record
 - relevant tests are missing, failing, or not reported
 - raw logs are pasted into docs, task files, or the review response
@@ -121,8 +139,12 @@ The branch must not be approved if:
 The branch may be `APPROVE` only if:
 
 - the task scope is clear
+- task-specific `Acceptance` criteria are satisfied or any remaining gap is explicitly accepted by the Supervisor
+- relevant Global Definition of Done requirements are satisfied
+- relevant `REVIEW_READY` criteria are satisfied
 - all relevant changes are within scope
 - relevant tests were run and passed, or a no-test rationale is clearly justified
+- the task state file includes acceptance progress, test evidence, known limitations, files touched, commands run, raw log paths if any, and recommended reviewer focus
 - no hard safety rule is violated
 - dependency changes are documented
 - docs are updated when behavior or architecture changed
@@ -163,6 +185,16 @@ Check:
 - Does the diff stay within the task's allowed paths?
 - Were forbidden paths modified?
 - Did the branch change shared files without explicit approval?
+
+### 1a. Completion gates
+
+Check:
+
+- Are task-specific `Acceptance` criteria satisfied?
+- Are relevant Global Definition of Done requirements satisfied?
+- Are relevant `REVIEW_READY` criteria satisfied?
+- Does the task state file include acceptance progress, test evidence, known limitations, files touched, commands run, raw log paths if any, and recommended reviewer focus?
+- Did the worker run `/handoff` or provide an equivalent PR-ready handoff?
 
 ### 2. Correctness
 

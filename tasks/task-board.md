@@ -23,6 +23,179 @@ This file is the supervisor-controlled task board for Gemini CLI development.
 | CHANGES_REQUESTED | Needs fixes |
 | DONE | Completed and reviewed |
 
+## Global Definition of Done
+
+A task may be marked `DONE` only when all of the following are true:
+
+- The task-specific `Acceptance` criteria are satisfied.
+- The implementation stays within the task's assigned scope.
+- Relevant tests were added or updated, unless the task is documentation-only.
+- Relevant tests pass locally, or the failure is explicitly documented and accepted by the Supervisor.
+- Build behavior is not broken.
+- No forbidden paths or out-of-scope files were modified.
+- No raw logs are pasted into `docs/`, `tasks/`, or comments.
+- Full logs, if needed, are saved under `.agent-logs/<task-id>/`.
+- `tasks/agent-state/TASK-xxx.WORKING_STATE.md` is updated.
+- Any dependency change is documented in `docs/DEPENDENCIES.md`.
+- Any architecture or workflow decision is documented in `tasks/architecture/DECISIONS.md`.
+- Any user-facing behavior or workflow change is reflected in `docs/`.
+- Legal boundaries are respected: no ROM downloads, keys, BIOS, firmware blobs, cartridge dumping instructions, DRM circumvention, or proprietary Nintendo assets.
+- Reviewer returns `APPROVE`, or the Supervisor explicitly accepts the remaining risk.
+
+## REVIEW_READY Criteria
+
+A worker may mark a task `REVIEW_READY` only when:
+
+- All intended code/documentation changes for the task are complete.
+- The task-specific `Acceptance` criteria appear satisfied.
+- The worker has run the narrowest relevant tests or documented why no tests apply.
+- Failing or skipped tests are documented in the task state file.
+- `tasks/agent-state/TASK-xxx.WORKING_STATE.md` contains:
+  - summary of changes
+  - files touched
+  - commands run
+  - test results
+  - known limitations
+  - raw log paths
+  - recommended reviewer focus
+- The branch has no unrelated changes.
+- The worker has run `/handoff` or produced an equivalent PR-ready handoff.
+
+## Phase 0 Exit Criteria — repository/bootstrap quality
+
+Phase 0 is complete when:
+
+- CMake/Ninja build is reproducible from a clean checkout.
+- At least one trivial test passes.
+- Formatting configuration exists and a non-mutating format check is documented.
+- Dependency documentation policy is explicit.
+- Legal safety checklist exists for future loader tasks.
+- Task maintenance rules are documented.
+- No proprietary artifacts, ROMs, keys, firmware, BIOS blobs, or dumping instructions are added.
+- All Phase 0 tasks are `DONE` or explicitly deferred by Supervisor decision.
+
+## Phase 1 Exit Criteria — macOS frontend shell
+
+Phase 1 is complete when:
+
+- The macOS frontend opens a placeholder window.
+- Upper and lower screen rectangles are displayed or represented.
+- Keyboard/mouse input events are logged deterministically.
+- Screen layout calculation is covered by tests.
+- Pause, reset request, fullscreen request, and screenshot placeholder paths are reachable.
+- Unsupported file types produce clear errors.
+- No commercial ROM loading, key loading, encrypted loading, or download flow is introduced.
+
+## Phase 2 Exit Criteria — CPU and memory foundations
+
+Phase 2 is complete when:
+
+- ARM11 CPU state, CPSR/APSR helpers, ARM/Thumb state representation, and memory regions are implemented.
+- Supported synthetic instruction subsets have deterministic unit tests.
+- Unsupported instructions log PC, raw instruction, mode, and reason.
+- Memory access errors include address and region information when available.
+- CPU golden program runner can execute bounded synthetic programs.
+- All tests for CPU and memory foundations pass.
+
+## Phase 3 Exit Criteria — HLE kernel skeleton and SVC routing
+
+Phase 3 is complete when:
+
+- Handles, processes, threads, scheduler state, and synchronization primitives have deterministic lifecycle tests.
+- SVC dispatch routes implemented SVCs and unknown SVCs through traceable paths.
+- Unsupported kernel behavior logs IDs, arguments, and reasons rather than silently succeeding.
+- A synthetic kernel integration smoke test runs without real 3DS binaries.
+- No service-specific or title-specific hacks are introduced.
+
+## Phase 4 Exit Criteria — 3DSX homebrew loader
+
+Phase 4 is complete when:
+
+- 3DSX headers, sections, relocations, environment setup, and process creation are covered by synthetic fixture tests.
+- Malformed 3DSX inputs fail deterministically with actionable errors.
+- Unresolved imports and service dependencies are reported as structured unsupported features.
+- A synthetic or lawful source-built homebrew path reaches an entrypoint and deterministic stop reason.
+- The lawful homebrew workflow is documented without binaries, ROM sites, keys, firmware, dumping instructions, or DRM circumvention.
+
+## Phase 5 Exit Criteria — baseline HLE services and IPC traces
+
+Phase 5 is complete when:
+
+- IPC pack/unpack helpers, service sessions, and baseline `srv`, `hid`, `apt`, `fs`, `gsp`, `cfg`, and `ptm` service paths are implemented or explicitly stubbed.
+- Known and unknown service commands produce deterministic traces with service name, command id, decoded arguments when known, result, and status.
+- A synthetic or lawful homebrew startup flow reaches service calls and records an explicit stop reason.
+- Compatibility notes are updated when real lawful homebrew is tested.
+
+## Phase 6 Exit Criteria — framebuffer and basic GPU path
+
+Phase 6 is complete when:
+
+- Core framebuffer state represents upper and lower screens with documented pixel format assumptions.
+- GSP framebuffer registration and CPU framebuffer blit paths are testable.
+- Frame hashes are deterministic and independent of host window scaling.
+- Screenshot and log-location paths are reachable without user-specific paths.
+- A synthetic or lawful framebuffer smoke path verifies expected pixels or frame hashes.
+
+## Phase 7 Exit Criteria — citro2d/citro3d and PICA200 path
+
+Phase 7 is complete when:
+
+- PICA200 command buffer research, initial graphics IR direction, and legal boundaries are documented.
+- Command buffer reading, register decoding, clear/color-fill, texture metadata, vertex metadata, simple triangle, and shader skeleton paths have synthetic tests.
+- Unsupported GPU registers, commands, state, and shader opcodes remain visible in structured logs.
+- Lawful citro2d/citro3d source-build workflow and expected stop reasons are documented.
+- Any Metal backend decision is documented and the CPU framebuffer path remains supported.
+
+## Phase 8 Exit Criteria — decrypted NCCH/CCI loader
+
+Phase 8 is complete when:
+
+- Already-decrypted NCSD/CCI, NCCH, ExeFS, and RomFS parsing behavior is documented and tested with synthetic fixtures.
+- Loader hooks can identify supported synthetic, homebrew, and already-decrypted container inputs.
+- Encrypted or unsupported inputs are rejected with clear errors and no key prompts.
+- Loader smoke tests enumerate expected sections and stop deterministically.
+- No encryption support, key handling, ROM download flow, firmware dependency, dumping guidance, or proprietary fixture is added.
+
+## Phase 9 Exit Criteria — FS/save/extdata
+
+Phase 9 is complete when:
+
+- Virtual archive interfaces and RomFS, SDMC, save data, and extdata backends have deterministic tests.
+- Host path sandboxing prevents traversal and avoids hard-coded local paths.
+- FS service archive integration and file/directory handle lifecycles are tested.
+- Durability tests cover write, close, reopen, flush, and failure paths using isolated temp directories.
+- Frontend save-folder access stays under the configured user-data root.
+
+## Phase 10 Exit Criteria — audio HLE
+
+Phase 10 is complete when:
+
+- DSP/audio research, command logging, buffer queue, mixer, timing model, and frontend output behavior are documented or implemented according to task scope.
+- Audio unit tests use synthetic sample data and do not require speakers or proprietary samples.
+- Unsupported DSP commands, invalid buffers, underruns, and overruns produce structured logs and deterministic errors.
+- Synthetic audio smoke tests verify output data or counters.
+- Manual lawful-homebrew audio test guidance references the compatibility policy.
+
+## Phase 11 Exit Criteria — compatibility harness and reporting
+
+Phase 11 is complete when:
+
+- Compatibility templates and records follow `docs/09_COMPATIBILITY_POLICY.md`.
+- Boot traces, frame hashes, service traces, GPU/audio traces, validators, and summary reports work with synthetic or lawful test inputs.
+- Compatibility claims include commit, host, content type, status, renderer/audio/input notes, logs, and known regressions.
+- Unsupported commercial compatibility claims are removed or downgraded.
+- Legal boundaries remain explicit in compatibility workflow docs.
+
+## Phase 12 Exit Criteria — performance and optional JIT
+
+Phase 12 is complete when:
+
+- Profiling counters and benchmark harnesses provide reproducible synthetic baselines without changing deterministic behavior.
+- Frame pacing, texture cache, shader cache, and Metal renderer work preserve reference-path correctness and documented fallbacks.
+- Dynarmic or any JIT work remains optional, license-reviewed, and gated by a human decision before integration.
+- Performance docs distinguish measured bottlenecks from guesses.
+- Phase completion does not require commercial title compatibility or JIT integration.
+
 ## Active tasks
 
 | ID | Status | Branch/worktree | State file | Owner | Notes |
@@ -263,7 +436,7 @@ Acceptance:
 Prompt:
 
 ```text
-Add a short rule to tasks/TASK_QUEUE.md or docs/04_CODEX_WORKFLOW.md explaining how future Codex tasks should mark completed work, split tasks that are too large, and add follow-up tasks without deleting project intent.
+Add a short rule to tasks/task-board.md explaining how future Codex tasks should mark completed work, split tasks that are too large, and add follow-up tasks without deleting project intent.
 ```
 
 Acceptance:
@@ -1977,7 +2150,7 @@ Acceptance:
 Prompt:
 
 ```text
-Audit performance data, compatibility results, and remaining correctness gaps. Refresh docs/03_ROADMAP.md and tasks/TASK_QUEUE.md with the next set of concrete tasks based on measured bottlenecks and compatibility blockers.
+Audit performance data, compatibility results, and remaining correctness gaps. Refresh docs/03_ROADMAP.md and tasks/task-board.md with the next set of concrete tasks based on measured bottlenecks and compatibility blockers.
 ```
 
 Acceptance:
@@ -1995,7 +2168,7 @@ Use these whenever a feature task reveals a cross-cutting need. Do not bundle th
 Prompt:
 
 ```text
-After a behavior or architecture change, update the relevant docs so AGENTS.md, docs/02_ARCHITECTURE.md, docs/03_ROADMAP.md, docs/05_BUILD_AND_TEST.md, docs/DEPENDENCIES.md, and tasks/TASK_QUEUE.md do not drift.
+After a behavior or architecture change, update the relevant docs so AGENTS.md, docs/02_ARCHITECTURE.md, docs/03_ROADMAP.md, docs/05_BUILD_AND_TEST.md, docs/DEPENDENCIES.md, and tasks/task-board.md do not drift.
 ```
 
 Acceptance:
