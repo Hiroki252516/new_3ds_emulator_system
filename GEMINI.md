@@ -282,3 +282,17 @@ Supervisor responsibility:
 - Resolve cross-task conflicts.
 - Ensure CI/status checks pass.
 - Merge only after review approval and required checks pass.
+
+
+
+
+
+## Autonomous supervisor prompt
+
+For fully supervised multi-worktree autonomous development, use:
+
+- `tasks/AUTONOMOUS_SUPERVISOR_PROMPT.md`
+
+This file is the canonical prompt for launching the Supervisor agent that coordinates multiple Gemini CLI worker sessions in separate Git worktrees and branches.
+
+Do not improvise a different autonomous workflow unless the human explicitly asks.
